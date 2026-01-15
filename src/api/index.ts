@@ -60,7 +60,12 @@ function createAlovaWithFetch() {
 // 使用 axios 发送请求
 function createAlovaWithAxios() {
   const { onAuthRequired, onResponseRefreshToken } = createServerTokenAuthentication({
-    refreshTokenOnSuccess: {
+    // 如果使用 axiosRequestAdapter 来发送请求,
+    // 自动刷新 accessToken 必须使用 refreshTokenOnError
+    // ISSUE: https://github.com/alovajs/alova/issues/772
+    // 如果使用 fetch 发送请求, 可以使用 refreshTokenOnSuccess
+    refreshTokenOnError: {
+      // refreshTokenOnSuccess: {
       isExpired: (res) => {
         return res.status === 401;
       },
